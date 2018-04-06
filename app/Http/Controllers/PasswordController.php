@@ -45,6 +45,13 @@ class PasswordController extends Controller
             return $this->toResponse($validator->errors());
         }
 
+        if(Password::findByDomain($request->website)){
+            return $this->toResponse([
+                "message" => "Sorry, You have already created entry by this domain",
+                "leval" => "error"
+            ]);
+        }
+
         if(Password::create($request->all())){
             return $this->toResponse([
                 "message" => "Your New Password Details Saved Successfully",
@@ -58,13 +65,12 @@ class PasswordController extends Controller
         ]);
     }
 
-    protected function toResponse($data, $responseCode = 0)
+    protected function toResponse($data, $responseCode = null)
     {
-        return response($data)
-                //->json($data)
-                ->header('Access-Control-Allow-Origin','*')
-                ->header('Access-Control-Request-Headers','access-control-allow-methods,access-control-allow-origin,content-type,x-requested-with')
-                ->header('Access-Control-Allow-Methods','GET, POST, PUT, DELETE, OPTIONS, HEAD');
+        if(!is_null($responseCode)){
+            return response()->json($data,$responseCode);
+        }
+        return response()->json($data);
     }
 
     /**
