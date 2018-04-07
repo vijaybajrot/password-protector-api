@@ -14,7 +14,7 @@ class PasswordController extends Controller
      */
     public function index()
     {
-        return Password::all();
+        return Password::paginate();
     }
 
     /**
